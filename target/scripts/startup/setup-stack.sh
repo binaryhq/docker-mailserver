@@ -1297,11 +1297,11 @@ function _setup_timezone
 }
 function _setup_dovecot_namespaces
 {
-  _log 'inf' "Setting up dovecot namespaces"
+  _log 'info' "Setting up dovecot namespaces"
   uncomment_shared_config_contents=no
   if [[ "${DEFAULT_VARS[DOVECOT_ENABLE_INBOX_SHARING]}" = 0 ]]
   then
-    _log 'inf' "Shared inboxes are disabled - the '${DEFAULT_VARS[DOVECOT_SHARED_INBOX_CONFIG]}' config file is left commented out"
+    _log 'info' "Shared inboxes are disabled - the '${DEFAULT_VARS[DOVECOT_SHARED_INBOX_CONFIG]}' config file is left commented out"
   else
     uncomment_shared_config_contents=yes
   fi
