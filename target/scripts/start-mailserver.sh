@@ -116,6 +116,9 @@ VARS[TZ]="${TZ:=}"
 VARS[UPDATE_CHECK_INTERVAL]="${UPDATE_CHECK_INTERVAL:=1d}"
 VARS[VIRUSMAILS_DELETE_DELAY]="${VIRUSMAILS_DELETE_DELAY:=7}"
 
+DEFAULT_VARS["DOVECOT_ENABLE_INBOX_SHARING"]="${DOVECOT_ENABLE_INBOX_SHARING:=0}"
+DEFAULT_VARS["DOVECOT_NAMESPACE_SEPARATOR_CLAUSE"]="separator = ${DOVECOT_NAMESPACE_SEPARATOR}"
+DEFAULT_VARS["DOVECOT_SHARED_INBOX_CONFIG"]="11-shared.conf"
 # ------------------------------------------------------------
 # ? << Setup of default and global values / variables
 # --
@@ -159,6 +162,7 @@ function _register_functions
   _register_setup_function '_setup_dkim'
   _register_setup_function '_setup_ssl'
   _register_setup_function '_setup_docker_permit'
+  _register_setup_function "_setup_dovecot_namespaces"
   _register_setup_function '_setup_mailname'
   _register_setup_function '_setup_amavis'
   _register_setup_function '_setup_dmarc_hostname'

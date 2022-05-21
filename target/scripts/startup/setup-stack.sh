@@ -1295,3 +1295,26 @@ function _setup_timezone
     return 1
   fi
 }
+function _setup_dovecot_namespaces
+{
+  _notify 'inf' "Setting up dovecot namespaces"
+  uncomment_shared_config_contents=no
+  if [[ "${DEFAULT_VARS[DOVECOT_ENABLE_INBOX_SHARING]}" = 0 ]]
+  then
+    _notify 'inf' "Shared inboxes are disabled - the '${DEFAULT_VARS[DOVECOT_SHARED_INBOX_CONFIG]}' config file is left commented out"
+  else
+    uncomment_shared_config_contents=yes
+  fi
+  if [[ -z "${DOVECOT_NAMESPACE_SEPARATOR}" ]]
+  then
+    [[ "${DEFAULT_VARS[DOVECOT_ENABLE_INBOX_SHARING]}" = 1 ]] && _notify 'warn' 'Namespace separator has to be defined in order for shared inboxes to work.'
+    uncomment_shared_config_contents=no
+    DOVECOT_NAMESPACE_SEPARATOR_CLAUSE="# ${DEFAULT_VARS[DOVECOT_NAMESPACE_SEPARATOR_CLAUSE]}"
+  else
+    DOVECOT_NAMESPACE_SEPARATOR_CLAUSE="${DEFAULT_VARS[DOVECOT_NAMESPACE_SEPARATOR_CLAUSE]}"
+  fi
+
+  [[ "${uncomment_shared_config_contents}" = yes ]] &&  sed -i -e "s/^#<#//" "/etc/dovecot/conf.d/${DEFAULT_VARS[DOVECOT_SHARED_INBOX_CONFIG]}"
+  sed -i -e "s|#@DOVECOT_NAMESPACE_SEPARATOR_CLAUSE@|${DOVECOT_NAMESPACE_SEPARATOR_CLAUSE}|" /etc/dovecot/conf.d/10-mail.conf
+  sed -i -e "s|@DOVECOT_NAMESPACE_SEPARATOR_CLAUSE@|${DOVECOT_NAMESPACE_SEPARATOR_CLAUSE}|" "/etc/dovecot/conf.d/${DEFAULT_VARS[DOVECOT_SHARED_INBOX_CONFIG]}"
+}
